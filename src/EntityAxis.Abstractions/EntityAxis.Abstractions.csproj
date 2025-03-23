@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <ProjectGuid>{8958B99D-84AD-4F3F-BCDB-5794A5225235}</ProjectGuid>
+    <PackageId>EntityAxis.Abstractions</PackageId>
+    <Authors>Casey Crouse</Authors>
+    <Description>
+      EntityAxis.Abstractions provides generic, strongly-typed interfaces for working with domain entities in Clean Architecture applications. It defines standard contracts for querying and mutating entities using identifier-based access, with support for pagination and composition.
+
+      These abstractions are framework-agnostic and serve as the foundation for higher-level implementations built with MediatR, EF Core, or custom infrastructure.
+
+      Ideal for developers building scalable .NET applications using CQRS and Clean Architecture principles.
+    </Description>
+    <RepositoryUrl>https://github.com/cbcrouse/EntityAxis</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>
+      dotnet;clean-architecture;cqrs;entity;abstractions;generic;commands;queries;repository;domain;ddd
+    </PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIconUrl>
+    </PackageIconUrl>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <IsTestProject>false</IsTestProject>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+</Project>
