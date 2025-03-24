@@ -15,6 +15,6 @@ public interface IUpdate<TEntity, TKey> where TEntity : IEntityId<TKey>
     /// </summary>
     /// <param name="entity">The entity to update.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>The updated entity.</returns>
-    Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
+    /// <returns>The updated entity identifier.</returns>
+    Task<TKey> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
 }

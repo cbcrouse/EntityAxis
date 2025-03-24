@@ -15,6 +15,6 @@ public interface ICreate<TEntity, TKey> where TEntity : IEntityId<TKey>
     /// </summary>
     /// <param name="entity">The entity to create.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>The created entity, typically with an assigned identifier.</returns>
-    Task<TEntity> CreateAsync(TEntity entity, CancellationToken cancellationToken = default);
+    /// <returns>The created entity identifier.</returns>
+    Task<TKey> CreateAsync(TEntity entity, CancellationToken cancellationToken = default);
 }
