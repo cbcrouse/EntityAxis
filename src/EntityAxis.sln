@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{20
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityAxis.Registration", "EntityAxis.Registration\EntityAxis.Registration.csproj", "{E845FC76-2029-4298-B023-21047B0542F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,18 @@ Global
 		{E2328C64-5410-41C9-948C-38F885D418C8}.Release|x64.Build.0 = Release|Any CPU
 		{E2328C64-5410-41C9-948C-38F885D418C8}.Release|x86.ActiveCfg = Release|Any CPU
 		{E2328C64-5410-41C9-948C-38F885D418C8}.Release|x86.Build.0 = Release|Any CPU
+		{E845FC76-2029-4298-B023-21047B0542F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E845FC76-2029-4298-B023-21047B0542F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E845FC76-2029-4298-B023-21047B0542F9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E845FC76-2029-4298-B023-21047B0542F9}.Debug|x64.Build.0 = Debug|Any CPU
+		{E845FC76-2029-4298-B023-21047B0542F9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E845FC76-2029-4298-B023-21047B0542F9}.Debug|x86.Build.0 = Debug|Any CPU
+		{E845FC76-2029-4298-B023-21047B0542F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E845FC76-2029-4298-B023-21047B0542F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E845FC76-2029-4298-B023-21047B0542F9}.Release|x64.ActiveCfg = Release|Any CPU
+		{E845FC76-2029-4298-B023-21047B0542F9}.Release|x64.Build.0 = Release|Any CPU
+		{E845FC76-2029-4298-B023-21047B0542F9}.Release|x86.ActiveCfg = Release|Any CPU
+		{E845FC76-2029-4298-B023-21047B0542F9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,5 +101,6 @@ Global
 		{9F49D4BE-E6DA-41A0-90A7-5FA03D9E1DF1} = {5949FE96-46EC-4E66-95DD-28BA2F581C5D}
 		{EE4E5967-CC91-4779-9EAA-5927FDFE87CF} = {5949FE96-46EC-4E66-95DD-28BA2F581C5D}
 		{E2328C64-5410-41C9-948C-38F885D418C8} = {5949FE96-46EC-4E66-95DD-28BA2F581C5D}
+		{E845FC76-2029-4298-B023-21047B0542F9} = {5949FE96-46EC-4E66-95DD-28BA2F581C5D}
 	EndGlobalSection
 EndGlobal
