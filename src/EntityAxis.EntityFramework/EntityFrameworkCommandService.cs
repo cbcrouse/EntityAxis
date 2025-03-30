@@ -45,7 +45,7 @@ public class EntityFrameworkCommandService<TEntity, TDbEntity, TDbContext, TKey>
         await using var context = await ContextFactory.CreateDbContextAsync(cancellationToken);
         var dbSet = context.Set<TDbEntity>();
 
-        var existing = await dbSet.FindAsync(keyValues:[entity.Id!], cancellationToken);
+        TDbEntity? existing = await dbSet.FindAsync(keyValues:[entity.Id!], cancellationToken);
         if (existing == null)
         {
             throw new InvalidOperationException($"{typeof(TDbEntity).Name} with id '{entity.Id}' was not found.");
@@ -63,7 +63,7 @@ public class EntityFrameworkCommandService<TEntity, TDbEntity, TDbContext, TKey>
         await using var context = await ContextFactory.CreateDbContextAsync(cancellationToken);
         var dbSet = context.Set<TDbEntity>();
 
-        var existing = await dbSet.FindAsync(keyValues:[id!], cancellationToken);
+        TDbEntity? existing = await dbSet.FindAsync(keyValues:[id!], cancellationToken);
         if (existing == null)
         {
             return;

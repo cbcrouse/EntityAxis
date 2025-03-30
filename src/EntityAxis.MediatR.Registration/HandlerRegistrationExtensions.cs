@@ -19,13 +19,13 @@ public static class HandlerRegistrationExtensions
     /// <typeparam name="TKey">The identifier type of the entity.</typeparam>
     /// <param name="services">The service collection for dependency injection.</param>
     /// <returns>The modified service collection.</returns>
-    public static IServiceCollection AddEntityCommandHandlers<TCreateModel, TUpdateModel, TEntity, TKey>(
+    public static IServiceCollection AddEntityAxisCommandHandlers<TCreateModel, TUpdateModel, TEntity, TKey>(
         this IServiceCollection services)
         where TCreateModel : class
         where TUpdateModel : class, IUpdateCommandModel<TEntity, TKey>
         where TEntity : class, IEntityId<TKey>
     {
-        return services.AddEntityCommandHandlers<TEntity, TKey>(builder => builder.AddAllCommands<TCreateModel, TUpdateModel>());
+        return services.AddEntityAxisCommandHandlers<TEntity, TKey>(builder => builder.AddAllCommands<TCreateModel, TUpdateModel>());
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public static class HandlerRegistrationExtensions
     /// <param name="services">The service collection to register with.</param>
     /// <param name="configure">A delegate to configure the command handler builder.</param>
     /// <returns>The updated <see cref="IServiceCollection"/> instance.</returns>
-    public static IServiceCollection AddEntityCommandHandlers<TEntity, TKey>(
+    public static IServiceCollection AddEntityAxisCommandHandlers<TEntity, TKey>(
         this IServiceCollection services,
         Action<EntityCommandHandlerBuilder<TEntity, TKey>> configure)
         where TEntity : class, IEntityId<TKey>
@@ -54,7 +54,7 @@ public static class HandlerRegistrationExtensions
     /// <param name="services">The service collection to add handlers to.</param>
     /// <param name="configure">A delegate to configure which handlers to add using a fluent API.</param>
     /// <returns>The modified <see cref="IServiceCollection"/> instance.</returns>
-    public static IServiceCollection AddEntityQueryHandlers<TEntity, TKey>(
+    public static IServiceCollection AddEntityAxisQueryHandlers<TEntity, TKey>(
         this IServiceCollection services,
         Action<EntityQueryHandlerBuilder<TEntity, TKey>> configure)
         where TEntity : class, IEntityId<TKey>
@@ -72,10 +72,10 @@ public static class HandlerRegistrationExtensions
     /// <typeparam name="TKey">The identifier type of the entity.</typeparam>
     /// <param name="services">The service collection for dependency injection.</param>
     /// <returns>The modified service collection.</returns>
-    public static IServiceCollection AddEntityQueryHandlers<TEntity, TKey>(this IServiceCollection services)
+    public static IServiceCollection AddEntityAxisQueryHandlers<TEntity, TKey>(this IServiceCollection services)
         where TEntity : class, IEntityId<TKey>
     {
-        return services.AddEntityQueryHandlers<TEntity, TKey>(builder => builder.AddAllQueries());
+        return services.AddEntityAxisQueryHandlers<TEntity, TKey>(builder => builder.AddAllQueries());
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public static class HandlerRegistrationExtensions
         where TEntity : class, IEntityId<TKey>
     {
         return services
-            .AddEntityCommandHandlers<TCreateModel, TUpdateModel, TEntity, TKey>()
-            .AddEntityQueryHandlers<TEntity, TKey>();
+            .AddEntityAxisCommandHandlers<TCreateModel, TUpdateModel, TEntity, TKey>()
+            .AddEntityAxisQueryHandlers<TEntity, TKey>();
     }
 }

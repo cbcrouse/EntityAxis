@@ -1,13 +1,15 @@
-﻿using EntityAxis.Abstractions;
-using EntityAxis.MediatR.Commands;
+﻿using EntityAxis.MediatR.Commands;
 using EntityAxis.MediatR.Queries;
 using EntityAxis.MediatR.Registration;
 using EntityAxis.Registration;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SampleApp.Application.Models;
+using SampleApp.Application.Validators;
+using SampleApp.Console.MediatR;
 using SampleApp.Domain;
 using SampleApp.Infrastructure.Mapping;
 using SampleApp.Persistence;
@@ -25,12 +27,15 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddAutoMapper(typeof(ProductProfile).Assembly);
 
         // Register command/query services
-        services.AddCommandService<ICommandService<Product, int>, ProductCommandService, Product, int>();
-        services.AddQueryService<IQueryService<Product, int>, ProductQueryService, Product, int>();
+        services.AddEntityAxisCommandAndQueryServicesFromAssembly<ProductCommandService>();
 
         // Register MediatR handlers and validators
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
         services.AddEntityAxisHandlers<ProductCreateModel, ProductUpdateModel, Product, int>();
+
+        // Register FluentValidation validators
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
+        services.AddValidatorsFromAssemblyContaining(typeof(ProductUpdateModelValidator));
     })
     .Build();
 

@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using EntityAxis.Abstractions;
 using EntityAxis.MediatR.Commands;
+using EntityAxis.MediatR.Internal;
 using MediatR;
-using System.Threading.Tasks;
-using System.Threading;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EntityAxis.MediatR.Handlers;
 
@@ -48,10 +49,8 @@ public class CreateEntityHandler<TModel, TEntity, TKey> : IRequestHandler<Create
         }
         catch (AutoMapperMappingException ex)
         {
-            throw new InvalidOperationException(
-                $"AutoMapper failed to map from {typeof(TModel).Name} to {typeof(TEntity).Name}. " +
-                $"Ensure a valid CreateMap<TModel, TEntity> is configured in AutoMapper. " +
-                $"Original message: {ex.Message}", ex);
+            var message = AutoMapperErrorFormatter.Format<TModel, TEntity>(ex);
+            throw new InvalidOperationException(message, ex);
         }
 
         return await _createService.CreateAsync(entity, cancellationToken);

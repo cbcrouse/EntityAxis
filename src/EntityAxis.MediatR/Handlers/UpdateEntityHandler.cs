@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EntityAxis.Abstractions;
 using EntityAxis.MediatR.Commands;
+using EntityAxis.MediatR.Internal;
 using MediatR;
 using System;
 using System.Threading;
@@ -66,10 +67,8 @@ public class UpdateEntityHandler<TModel, TEntity, TKey> : IRequestHandler<Update
         }
         catch (AutoMapperMappingException ex)
         {
-            throw new InvalidOperationException(
-                $"AutoMapper failed to map from {typeof(TModel).Name} to {typeof(TEntity).Name}. " +
-                $"Ensure a valid CreateMap<{typeof(TModel).Name}, {typeof(TEntity).Name}> is configured in AutoMapper. " +
-                $"Original message: {ex.Message}", ex);
+            var message = AutoMapperErrorFormatter.Format<TModel, TEntity>(ex);
+            throw new InvalidOperationException(message, ex);
         }
 
         // Ensure ID was not altered during mapping
