@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using EntityAxis.Abstractions;
+﻿using EntityAxis.Abstractions;
 using EntityAxis.MediatR.Commands;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,26 +10,6 @@ namespace EntityAxis.MediatR.Registration;
 public static class HandlerRegistrationExtensions
 {
     /// <summary>
-    /// Registers one or more command handlers for the specified entity using a fluent builder API.
-    /// </summary>
-    /// <typeparam name="TEntity">The entity type.</typeparam>
-    /// <typeparam name="TKey">The type of the entity's identifier.</typeparam>
-    /// <param name="services">The service collection to register with.</param>
-    /// <param name="mapper">The AutoMapper instance to validate mapping configurations.</param>
-    /// <param name="configure">A delegate to configure the command handler builder.</param>
-    /// <returns>The updated <see cref="IServiceCollection"/> instance.</returns>
-    public static IServiceCollection AddEntityCommandHandlers<TEntity, TKey>(
-        this IServiceCollection services,
-        IMapper mapper,
-        Action<EntityCommandHandlerBuilder<TEntity, TKey>> configure)
-        where TEntity : class, IEntityId<TKey>
-    {
-        var builder = new EntityCommandHandlerBuilder<TEntity, TKey>(services, mapper);
-        configure(builder);
-        return services;
-    }
-
-    /// <summary>
     /// Registers all generic command handlers and validators for <typeparamref name="TEntity"/>:
     /// Create, Update, and Delete.
     /// </summary>
@@ -39,16 +18,32 @@ public static class HandlerRegistrationExtensions
     /// <typeparam name="TEntity">The entity type.</typeparam>
     /// <typeparam name="TKey">The identifier type of the entity.</typeparam>
     /// <param name="services">The service collection for dependency injection.</param>
-    /// <param name="mapper">The AutoMapper instance to validate mapping configurations.</param>
     /// <returns>The modified service collection.</returns>
     public static IServiceCollection AddEntityCommandHandlers<TCreateModel, TUpdateModel, TEntity, TKey>(
-        this IServiceCollection services,
-        IMapper mapper)
+        this IServiceCollection services)
         where TCreateModel : class
         where TUpdateModel : class, IUpdateCommandModel<TEntity, TKey>
         where TEntity : class, IEntityId<TKey>
     {
-        return services.AddEntityCommandHandlers<TEntity, TKey>(mapper, builder => builder.AddAllCommands<TCreateModel, TUpdateModel>());
+        return services.AddEntityCommandHandlers<TEntity, TKey>(builder => builder.AddAllCommands<TCreateModel, TUpdateModel>());
+    }
+
+    /// <summary>
+    /// Registers one or more command handlers for the specified entity using a fluent builder API.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TKey">The type of the entity's identifier.</typeparam>
+    /// <param name="services">The service collection to register with.</param>
+    /// <param name="configure">A delegate to configure the command handler builder.</param>
+    /// <returns>The updated <see cref="IServiceCollection"/> instance.</returns>
+    public static IServiceCollection AddEntityCommandHandlers<TEntity, TKey>(
+        this IServiceCollection services,
+        Action<EntityCommandHandlerBuilder<TEntity, TKey>> configure)
+        where TEntity : class, IEntityId<TKey>
+    {
+        var builder = new EntityCommandHandlerBuilder<TEntity, TKey>(services);
+        configure(builder);
+        return services;
     }
 
     /// <summary>
@@ -91,17 +86,15 @@ public static class HandlerRegistrationExtensions
     /// <typeparam name="TEntity">The entity type.</typeparam>
     /// <typeparam name="TKey">The identifier type.</typeparam>
     /// <param name="services">The service collection.</param>
-    /// <param name="mapper">The AutoMapper instance for mapping validation.</param>
     /// <returns>The modified service collection.</returns>
     public static IServiceCollection AddEntityAxisHandlers<TCreateModel, TUpdateModel, TEntity, TKey>(
-        this IServiceCollection services,
-        IMapper mapper)
+        this IServiceCollection services)
         where TCreateModel : class
         where TUpdateModel : class, IUpdateCommandModel<TEntity, TKey>
         where TEntity : class, IEntityId<TKey>
     {
         return services
-            .AddEntityCommandHandlers<TCreateModel, TUpdateModel, TEntity, TKey>(mapper)
+            .AddEntityCommandHandlers<TCreateModel, TUpdateModel, TEntity, TKey>()
             .AddEntityQueryHandlers<TEntity, TKey>();
     }
 }

@@ -2,16 +2,41 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <ProjectGuid>{1D3778DD-5577-4AA8-A88A-62D7CFBAD9EB}</ProjectGuid>
+    <PackageId>EntityAxis.EntityFramework</PackageId>
+    <Authors>Casey Crouse</Authors>
+    <Description>
+      Provides a generic and extensible implementation of ICommandService and IQueryService using Entity Framework Core. Enables clean, testable data access logic with support for domain–to–database entity separation and AutoMapper integration.
+    </Description>
+    <RepositoryUrl>https://github.com/cbcrouse/EntityAxis</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>
+      EntityFramework;EFCore;DataAccess;CleanArchitecture;Repository;CQRS;GenericServices;EntityAxis
+    </PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIconUrl>
+    </PackageIconUrl>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <IsTestProject>false</IsTestProject>
+    <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EntityAxis.Abstractions\EntityAxis.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

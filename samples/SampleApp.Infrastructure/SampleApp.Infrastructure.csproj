@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\EntityAxis.MediatR.Registration\EntityAxis.MediatR.Registration.csproj" />
+    <ProjectReference Include="..\..\src\EntityAxis.Registration\EntityAxis.Registration.csproj" />
+    <ProjectReference Include="..\SampleApp.Application\SampleApp.Application.csproj" />
+    <ProjectReference Include="..\SampleApp.Persistence\SampleApp.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>

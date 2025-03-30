@@ -23,17 +23,14 @@ public sealed class EntityCommandHandlerBuilder<TEntity, TKey>
     where TEntity : class, IEntityId<TKey>
 {
     private readonly IServiceCollection _services;
-    private readonly IMapper _mapper;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EntityCommandHandlerBuilder{TEntity, TKey}"/> class.
     /// </summary>
     /// <param name="services">The service collection used to register handlers and validators.</param>
-    /// <param name="mapper">The AutoMapper instance for validating mapping configurations.</param>
-    public EntityCommandHandlerBuilder(IServiceCollection services, IMapper mapper)
+    public EntityCommandHandlerBuilder(IServiceCollection services)
     {
         _services = services;
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper), "AutoMapper is required to use EntityAxis command handlers. Ensure it is registered with dependency injection.");
     }
 
     /// <summary>
@@ -44,8 +41,6 @@ public sealed class EntityCommandHandlerBuilder<TEntity, TKey>
     public EntityCommandHandlerBuilder<TEntity, TKey> AddCreate<TModel>()
         where TModel : class
     {
-        TypeMapValidationHelper.EnsureMappingExists<TModel, TEntity>(_mapper);
-
         _services.AddTransient<IRequestHandler<CreateEntityCommand<TModel, TEntity, TKey>, TKey>, CreateEntityHandler<TModel, TEntity, TKey>>();
         _services.AddTransient<IValidator<CreateEntityCommand<TModel, TEntity, TKey>>, CreateEntityValidator<TModel, TEntity, TKey>>();
 
@@ -60,8 +55,6 @@ public sealed class EntityCommandHandlerBuilder<TEntity, TKey>
     public EntityCommandHandlerBuilder<TEntity, TKey> AddUpdate<TModel>()
         where TModel : class, IUpdateCommandModel<TEntity, TKey>
     {
-        TypeMapValidationHelper.EnsureMappingExists<TModel, TEntity>(_mapper);
-
         _services.AddTransient<IRequestHandler<UpdateEntityCommand<TModel, TEntity, TKey>, TKey>, UpdateEntityHandler<TModel, TEntity, TKey>>();
         _services.AddTransient<IValidator<UpdateEntityCommand<TModel, TEntity, TKey>>, UpdateEntityValidator<TModel, TEntity, TKey>>();
 

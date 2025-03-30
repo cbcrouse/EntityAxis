@@ -58,9 +58,21 @@ public class UpdateEntityHandler<TModel, TEntity, TKey> : IRequestHandler<Update
             throw new ApplicationException($"Unable to find {typeof(TEntity).Name} with ID \"{request.UpdateModel.Id}\".");
         }
 
-        // Safeguard: Preserve entity identity even if AutoMapper is misconfigured
         TKey originalId = entity.Id;
-        _mapper.Map(request.UpdateModel, entity);
+
+        try
+        {
+            _mapper.Map(request.UpdateModel, entity);
+        }
+        catch (AutoMapperMappingException ex)
+        {
+            throw new InvalidOperationException(
+                $"AutoMapper failed to map from {typeof(TModel).Name} to {typeof(TEntity).Name}. " +
+                $"Ensure a valid CreateMap<{typeof(TModel).Name}, {typeof(TEntity).Name}> is configured in AutoMapper. " +
+                $"Original message: {ex.Message}", ex);
+        }
+
+        // Ensure ID was not altered during mapping
         entity.Id = originalId;
 
         await _updateService.UpdateAsync(entity, cancellationToken);

@@ -4,6 +4,7 @@ using EntityAxis.MediatR.Commands;
 using MediatR;
 using System.Threading.Tasks;
 using System.Threading;
+using System;
 
 namespace EntityAxis.MediatR.Handlers;
 
@@ -36,11 +37,23 @@ public class CreateEntityHandler<TModel, TEntity, TKey> : IRequestHandler<Create
     }
 
     /// <inheritdoc />
-    public Task<TKey> Handle(CreateEntityCommand<TModel, TEntity, TKey> request, CancellationToken cancellationToken)
+    public async Task<TKey> Handle(CreateEntityCommand<TModel, TEntity, TKey> request, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var entity = _mapper.Map<TEntity>(request.CreateModel);
-        return _createService.CreateAsync(entity, cancellationToken);
+        TEntity entity;
+        try
+        {
+            entity = _mapper.Map<TEntity>(request.CreateModel);
+        }
+        catch (AutoMapperMappingException ex)
+        {
+            throw new InvalidOperationException(
+                $"AutoMapper failed to map from {typeof(TModel).Name} to {typeof(TEntity).Name}. " +
+                $"Ensure a valid CreateMap<TModel, TEntity> is configured in AutoMapper. " +
+                $"Original message: {ex.Message}", ex);
+        }
+
+        return await _createService.CreateAsync(entity, cancellationToken);
     }
 }
