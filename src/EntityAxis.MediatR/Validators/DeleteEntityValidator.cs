@@ -1,6 +1,7 @@
 ﻿using EntityAxis.Abstractions;
 using EntityAxis.MediatR.Commands;
 using FluentValidation;
+using System.Collections.Generic;
 
 namespace EntityAxis.MediatR.Validators;
 
@@ -15,6 +16,8 @@ public class DeleteEntityValidator<TEntity, TKey> : AbstractValidator<DeleteEnti
     /// </summary>
     public DeleteEntityValidator()
     {
-        RuleFor(x => x.Id).NotNull().WithMessage("An ID must be provided to delete an entity.");
+        RuleFor(x => x.Id)
+            .Must(id => !EqualityComparer<TKey>.Default.Equals(id, default!))
+            .WithMessage("An ID must be provided to delete an entity.");
     }
 }

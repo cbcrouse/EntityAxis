@@ -1,5 +1,6 @@
 ﻿using EntityAxis.Abstractions;
 using EntityAxis.MediatR.Commands;
+using EntityAxis.MediatR.Exceptions;
 using MediatR;
 using System;
 using System.Threading;
@@ -43,7 +44,7 @@ public class DeleteEntityHandler<TEntity, TKey> : IRequestHandler<DeleteEntityCo
         var entity = await _getByIdService.GetByIdAsync(request.Id, cancellationToken);
         if (entity == null)
         {
-            throw new ApplicationException($"Unable to find {typeof(TEntity).Name} with ID \"{request.Id}\".");
+            throw new EntityNotFoundException(typeof(TEntity).Name, request.Id);
         }
 
         await _deleteService.DeleteAsync(request.Id, cancellationToken);

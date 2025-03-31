@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace EntityAxis.Registration;
 
@@ -37,10 +38,11 @@ public static class EntityServiceRegistrationExtensions
         where TImplementation : class, TService
         where TEntity : class, IEntityId<TKey>
     {
-        services.AddWithLifetime<TService, TImplementation>(lifetime);
-        services.AddWithLifetime<ICreate<TEntity, TKey>, TImplementation>(lifetime);
-        services.AddWithLifetime<IUpdate<TEntity, TKey>, TImplementation>(lifetime);
-        services.AddWithLifetime<IDelete<TEntity, TKey>, TImplementation>(lifetime);
+        services.TryAddWithLifetime<TService, TImplementation>(lifetime);
+        services.TryAddWithLifetime<ICommandService<TEntity, TKey>, TImplementation>(lifetime);
+        services.TryAddWithLifetime<ICreate<TEntity, TKey>, TImplementation>(lifetime);
+        services.TryAddWithLifetime<IUpdate<TEntity, TKey>, TImplementation>(lifetime);
+        services.TryAddWithLifetime<IDelete<TEntity, TKey>, TImplementation>(lifetime);
         return services;
     }
 
@@ -69,10 +71,11 @@ public static class EntityServiceRegistrationExtensions
         where TImplementation : class, TService
         where TEntity : class, IEntityId<TKey>
     {
-        services.AddWithLifetime<TService, TImplementation>(lifetime);
-        services.AddWithLifetime<IGetById<TEntity, TKey>, TImplementation>(lifetime);
-        services.AddWithLifetime<IGetAll<TEntity, TKey>, TImplementation>(lifetime);
-        services.AddWithLifetime<IGetPaged<TEntity, TKey>, TImplementation>(lifetime);
+        services.TryAddWithLifetime<TService, TImplementation>(lifetime);
+        services.TryAddWithLifetime<IQueryService<TEntity, TKey>, TImplementation>(lifetime);
+        services.TryAddWithLifetime<IGetById<TEntity, TKey>, TImplementation>(lifetime);
+        services.TryAddWithLifetime<IGetAll<TEntity, TKey>, TImplementation>(lifetime);
+        services.TryAddWithLifetime<IGetPaged<TEntity, TKey>, TImplementation>(lifetime);
         return services;
     }
 
@@ -134,40 +137,86 @@ public static class EntityServiceRegistrationExtensions
         return services;
     }
 
-    private static void AddWithLifetime<TService, TImplementation>(
+    private static void TryAddWithLifetime<TService, TImplementation>(
         this IServiceCollection services,
         ServiceLifetime lifetime)
         where TService : class
         where TImplementation : class, TService
     {
         var descriptor = new ServiceDescriptor(typeof(TService), typeof(TImplementation), lifetime);
-        services.Add(descriptor);
+        services.TryAdd(descriptor);
     }
 
     private static void RegisterServicesForInterface(
+    IServiceCollection services,
+    IReadOnlyList<Type> implementationTypes,
+    Type targetGenericInterface,
+    string registrationMethodName,
+    ServiceLifetime lifetime)
+    {
+        foreach (Type implementationType in implementationTypes)
+        {
+            RegisterMatchingInterfaces(services, implementationType, targetGenericInterface, registrationMethodName, lifetime);
+        }
+    }
+
+    private static void RegisterMatchingInterfaces(
         IServiceCollection services,
-        IReadOnlyList<Type> types,
-        Type interfaceTypeDefinition,
+        Type implementationType,
+        Type targetGenericInterface,
         string registrationMethodName,
         ServiceLifetime lifetime)
     {
-        foreach (var implType in types)
+        Type[] implementedInterfaces = implementationType.GetInterfaces();
+
+        foreach (Type interfaceType in implementedInterfaces)
         {
-            var matchingInterfaces = implType.GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == interfaceTypeDefinition);
-
-            foreach (var serviceInterface in matchingInterfaces)
+            if (TryGetGenericMatch(interfaceType, targetGenericInterface, out Type entityType, out Type keyType))
             {
-                var genericArgs = serviceInterface.GetGenericArguments();
-                var entityType = genericArgs[0];
-                var keyType = genericArgs[1];
-
-                var method = typeof(EntityServiceRegistrationExtensions)
-                    .GetMethod(registrationMethodName, BindingFlags.Public | BindingFlags.Static)
-                    !.MakeGenericMethod(serviceInterface, implType, entityType, keyType);
-
-                method.Invoke(null, [services, lifetime]);
+                RegisterGenericService(services, registrationMethodName, interfaceType, implementationType, entityType, keyType, lifetime);
+                break; // Only register once per implementation
             }
         }
+    }
+
+    private static bool TryGetGenericMatch(
+        Type interfaceType,
+        Type targetGenericInterface,
+        out Type entityType,
+        out Type keyType)
+    {
+        IEnumerable<Type> inheritedAndSelfInterfaces = interfaceType.GetInterfaces().Append(interfaceType);
+
+        foreach (Type candidateInterface in inheritedAndSelfInterfaces)
+        {
+            if (candidateInterface.IsGenericType &&
+                candidateInterface.GetGenericTypeDefinition() == targetGenericInterface)
+            {
+                Type[] genericArguments = candidateInterface.GetGenericArguments();
+                entityType = genericArguments[0];
+                keyType = genericArguments[1];
+                return true;
+            }
+        }
+
+        entityType = null!;
+        keyType = null!;
+        return false;
+    }
+
+    private static void RegisterGenericService(
+        IServiceCollection services,
+        string registrationMethodName,
+        Type interfaceType,
+        Type implementationType,
+        Type entityType,
+        Type keyType,
+        ServiceLifetime lifetime)
+    {
+        MethodInfo method = typeof(EntityServiceRegistrationExtensions)
+            .GetMethod(registrationMethodName, BindingFlags.Public | BindingFlags.Static)!
+            .MakeGenericMethod(interfaceType, implementationType, entityType, keyType);
+
+        method.Invoke(null, [services, lifetime]);
     }
 }

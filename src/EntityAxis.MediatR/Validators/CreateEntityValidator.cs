@@ -1,7 +1,6 @@
 ﻿using EntityAxis.Abstractions;
 using EntityAxis.MediatR.Commands;
 using FluentValidation;
-using System;
 
 namespace EntityAxis.MediatR.Validators;
 
@@ -19,11 +18,17 @@ public class CreateEntityValidator<TModel, TEntity, TKey> : AbstractValidator<Cr
     /// Initializes a new instance of the <see cref="CreateEntityValidator{TModel, TEntity, TKey}"/> class.
     /// </summary>
     /// <param name="modelValidator">Validator for the create model.</param>
-    public CreateEntityValidator(IValidator<TModel> modelValidator)
+    public CreateEntityValidator(IValidator<TModel>? modelValidator)
     {
         if (modelValidator is null)
         {
-            throw new ArgumentNullException(nameof(modelValidator), $"A validator for {typeof(TModel).Name} must be provided to {GetType().Name}.");
+            RuleFor(x => x.CreateModel)
+                .Custom((_, context) =>
+                {
+                    context.AddFailure($"No validator registered for {typeof(TModel).Name}. Ensure it is registered using AddValidatorsFromAssembly.");
+                });
+
+            return;
         }
 
         RuleFor(x => x.CreateModel).NotNull().SetValidator(modelValidator);

@@ -6,6 +6,7 @@ using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using EntityAxis.MediatR.Exceptions;
 
 namespace EntityAxis.MediatR.Handlers;
 
@@ -56,7 +57,7 @@ public class UpdateEntityHandler<TModel, TEntity, TKey> : IRequestHandler<Update
         var entity = await _getByIdService.GetByIdAsync(request.UpdateModel.Id, cancellationToken);
         if (entity == null)
         {
-            throw new ApplicationException($"Unable to find {typeof(TEntity).Name} with ID \"{request.UpdateModel.Id}\".");
+            throw new EntityNotFoundException(typeof(TEntity).Name, request.UpdateModel.Id);
         }
 
         TKey originalId = entity.Id;

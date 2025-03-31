@@ -1,4 +1,5 @@
-﻿using EntityAxis.Abstractions;
+﻿using System.Collections.Generic;
+using EntityAxis.Abstractions;
 using EntityAxis.MediatR.Queries;
 using FluentValidation;
 
@@ -15,6 +16,8 @@ public class GetEntityByIdValidator<TEntity, TKey> : AbstractValidator<GetEntity
     /// </summary>
     public GetEntityByIdValidator()
     {
-        RuleFor(x => x.Id).NotNull().WithMessage("An ID must be provided to retrieve an entity.");
+        RuleFor(x => x.Id)
+            .Must(id => !EqualityComparer<TKey>.Default.Equals(id, default!))
+            .WithMessage("An ID must be provided to retrieve an entity.");
     }
 }
