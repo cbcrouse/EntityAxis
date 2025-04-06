@@ -1,5 +1,18 @@
 # EntityAxis
 
+[![Main Status](https://github.com/cbcrouse/EntityAxis/actions/workflows/dotnet.main.status.yml/badge.svg)](https://github.com/cbcrouse/EntityAxis/actions/workflows/dotnet.main.status.yml)
+[![codecov](https://codecov.io/gh/cbcrouse/EntityAxis/graph/badge.svg?token=BqTvhjNGOb)](https://codecov.io/gh/cbcrouse/EntityAxis)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=cbcrouse_EntityAxis&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=cbcrouse_EntityAxis)
+
+| Package | NuGet | Downloads |
+|--------|-------|-----------|
+| **EntityAxis.Abstractions** | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.Abstractions)](https://www.nuget.org/packages/EntityAxis.Abstractions) | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.Abstractions)](https://www.nuget.org/stats/packages/EntityAxis.Abstractions) |
+| **EntityAxis.MediatR** | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.MediatR)](https://www.nuget.org/packages/EntityAxis.MediatR) | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.MediatR)](https://www.nuget.org/stats/packages/EntityAxis.MediatR) |
+| **EntityAxis.MediatR.Registration** | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.MediatR.Registration)](https://www.nuget.org/packages/EntityAxis.MediatR.Registration) | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.MediatR.Registration)](https://www.nuget.org/stats/packages/EntityAxis.MediatR.Registration) |
+| **EntityAxis.Registration** | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.Registration)](https://www.nuget.org/packages/EntityAxis.Registration) | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.Registration)](https://www.nuget.org/stats/packages/EntityAxis.Registration) |
+| **EntityAxis.EntityFramework** | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.EntityFramework)](https://www.nuget.org/packages/EntityAxis.EntityFramework) | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.EntityFramework)](https://www.nuget.org/stats/packages/EntityAxis.EntityFramework) |
+
+
 **EntityAxis** is a modular, opinionated library for building clean, maintainable applications using **CQRS**, **MediatR**, and **Entity Framework Core** — with full support for your own abstractions and persistence strategies.
 
 Built for teams embracing **Clean Architecture**, EntityAxis helps reduce boilerplate and enforce consistency in application flows, from command/query operations to handler validation and service registration.
