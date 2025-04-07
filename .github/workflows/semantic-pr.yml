@@ -12,7 +12,36 @@ jobs:
     steps:
       - uses: amannn/action-semantic-pull-request@v5
         with:
-          types: feat, fix, chore, refactor, test, docs, style, perf, ci, build, revert
+          # Allowed types
+          types: |
+            feat
+            fix
+            chore
+            refactor
+            test
+            docs
+            style
+            perf
+            ci
+            build
+            revert
+
+          # Require scope
           requireScope: true
+
+          # Scope must be Title Case (start with capital letter, no symbols)
+          disallowScopes: |
+            [a-z0-9]+
+
+          # Subject must start with capital letter (Sentence Case)
+          subjectPattern: '^[A-Z].+'
+          subjectPatternError: |
+            The subject "{subject}" in title "{title}" must be written in sentence case.
+            It should start with a capital letter (e.g., "Added support for X").
+
+          # Optional override if you support complex scopes with dots or namespaces
+          headerPattern: '^(\w+)\(([^)]+)\): (.+)$'
+          headerPatternCorrespondence: type, scope, subject
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
