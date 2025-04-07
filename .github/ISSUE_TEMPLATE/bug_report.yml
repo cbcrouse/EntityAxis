@@ -1,0 +1,74 @@
+name: "\U0001F41B Bug Report"
+description: Report something that isn't working as expected.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug. Please provide as much detail as possible to help us reproduce and fix the issue.
+
+  - type: input
+    id: package
+    attributes:
+      label: Affected Package(s)
+      description: Which package(s) are affected (e.g., `EntityAxis.EntityFramework`)?
+      placeholder: EntityAxis.EntityFramework
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      description: Which version(s) are you using?
+      placeholder: 0.0.1-beta
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Clearly describe what the bug is and what behavior you expected instead.
+      placeholder: Describe the bug here
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: What steps do we need to take to reproduce the issue?
+      placeholder: |
+        1. Use service A
+        2. Call method B
+        3. Observe behavior C
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs or Output
+      description: Paste any relevant logs or exception details here.
+      render: shell
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - Windows
+        - Linux
+        - macOS
+        - Other
+      multiple: true
+      description: Which OS are you using?
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      options:
+        - label: I have read and agree to follow this project's [Code of Conduct](../CODE_OF_CONDUCT.md)
+          required: true
