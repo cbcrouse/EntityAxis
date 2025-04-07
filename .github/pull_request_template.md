@@ -35,3 +35,4 @@ See `.github/workflows/semantic-pr.yml` for the full validation rules.
 ## 🔗 Related Issues
 
 <!-- Example: Closes #123 -->
+
