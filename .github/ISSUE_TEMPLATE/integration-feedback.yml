@@ -1,0 +1,38 @@
+name: 🧪 Integration or Usage Feedback
+description: Share how you're using EntityAxis and any friction, surprises, or suggestions
+title: "[Feedback]: "
+labels: [feedback, community]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We'd love to hear about your experience using EntityAxis! Whether it's a success story or a challenge, your feedback helps shape the project.
+
+  - type: dropdown
+    id: integration-area
+    attributes:
+      label: Which parts of EntityAxis are you using?
+      multiple: true
+      options:
+        - EntityAxis.Abstractions
+        - EntityAxis.MediatR
+        - EntityAxis.MediatR.Registration
+        - EntityAxis.EntityFramework
+        - EntityAxis.Registration
+        - Other (please describe below)
+
+  - type: textarea
+    id: experience
+    attributes:
+      label: How's it going?
+      description: Share how you're using the library, what worked well, and any pain points or surprises.
+      placeholder: We used EntityAxis in our Clean Architecture template to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestions
+    attributes:
+      label: Suggestions for improvement
+      description: Anything you’d change about the library, API design, setup, or documentation?
+      placeholder: Would be great if...
