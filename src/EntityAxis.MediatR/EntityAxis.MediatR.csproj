@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -20,7 +20,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIconUrl>
     </PackageIconUrl>
-    <VersionPrefix>0.0.1-beta</VersionPrefix>
+    <VersionPrefix>0.1.0</VersionPrefix>
     <IsTestProject>false</IsTestProject>
     <LangVersion>latest</LangVersion>
     <nullable>enable</nullable>
