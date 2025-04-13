@@ -60,8 +60,6 @@ public class UpdateEntityHandler<TModel, TEntity, TKey> : IRequestHandler<Update
             throw new EntityNotFoundException(typeof(TEntity).Name, request.UpdateModel.Id);
         }
 
-        TKey originalId = entity.Id;
-
         try
         {
             _mapper.Map(request.UpdateModel, entity);
@@ -71,9 +69,6 @@ public class UpdateEntityHandler<TModel, TEntity, TKey> : IRequestHandler<Update
             var message = AutoMapperErrorFormatter.Format<TModel, TEntity>(ex);
             throw new InvalidOperationException(message, ex);
         }
-
-        // Ensure ID was not altered during mapping
-        entity.Id = originalId;
 
         await _updateService.UpdateAsync(entity, cancellationToken);
         return entity.Id;
