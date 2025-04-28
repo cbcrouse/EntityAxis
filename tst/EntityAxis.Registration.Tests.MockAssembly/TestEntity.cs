@@ -1,6 +1,6 @@
 ﻿using EntityAxis.Abstractions;
 
-namespace EntityAxis.Registration.Tests.TestClasses;
+namespace EntityAxis.Registration.Tests.MockAssembly;
 
 public class TestEntity : IEntityId<int>
 {
