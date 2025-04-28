@@ -80,61 +80,106 @@ public static class EntityServiceRegistrationExtensions
     }
 
     /// <summary>
-    /// Scans the assembly containing <typeparamref name="TMarker"/> for implementations of
+    /// Scans the assembly containing <typeparamref name="TMarker"/> for implementations of 
     /// <see cref="ICommandService{TEntity, TKey}"/> and <see cref="IQueryService{TEntity, TKey}"/>,
-    /// and registers them along with their related interfaces using the specified lifetime.
+    /// and registers them and their related custom interfaces using the specified lifetime.
     /// </summary>
     /// <typeparam name="TMarker">A type from the target assembly to use as a marker for scanning.</typeparam>
     /// <param name="services">The dependency injection service collection.</param>
-    /// <param name="lifetime">
-    /// The service lifetime to use for all registered interfaces (default: <see cref="ServiceLifetime.Transient"/>).
-    /// </param>
-    /// <returns>The updated <see cref="IServiceCollection"/> instance.</returns>
+    /// <param name="lifetime">The service lifetime to use for all registered interfaces (default is Scoped).</param>
     public static IServiceCollection AddEntityAxisCommandAndQueryServicesFromAssembly<TMarker>(
         this IServiceCollection services,
-        ServiceLifetime lifetime = ServiceLifetime.Transient)
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
         return services.AddEntityAxisCommandAndQueryServicesFromAssemblies([typeof(TMarker).Assembly], lifetime);
     }
 
     /// <summary>
-    /// Scans the specified assemblies for implementations of
+    /// Scans the specified assemblies for implementations of 
     /// <see cref="ICommandService{TEntity, TKey}"/> and <see cref="IQueryService{TEntity, TKey}"/>,
-    /// and registers each implementation along with its related interfaces
-    /// (<see cref="ICreate{TEntity, TKey}"/>, <see cref="IUpdate{TEntity, TKey}"/>,
-    /// <see cref="IGetById{TEntity, TKey}"/>, etc.) using the specified lifetime.
+    /// and registers them and their related custom interfaces using the specified lifetime.
     /// </summary>
     /// <param name="services">The dependency injection service collection.</param>
-    /// <param name="assemblies">The assemblies to scan for service implementations.</param>
-    /// <param name="lifetime">
-    /// The service lifetime to use for all registered interfaces (default: <see cref="ServiceLifetime.Transient"/>).
-    /// </param>
-    /// <returns>The updated <see cref="IServiceCollection"/> instance.</returns>
+    /// <param name="assemblies">Assemblies to scan for services.</param>
+    /// <param name="lifetime">The service lifetime to use for all registered interfaces (default is Scoped).</param>
     public static IServiceCollection AddEntityAxisCommandAndQueryServicesFromAssemblies(
         this IServiceCollection services,
         IEnumerable<Assembly> assemblies,
-        ServiceLifetime lifetime = ServiceLifetime.Transient)
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
-        var types = assemblies
-            .SelectMany(a => a.GetTypes())
-            .Where(t => t.IsClass && !t.IsAbstract)
-            .ToList();
+        foreach (var assembly in assemblies)
+        {
+            var types = assembly
+                .GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract)
+                .ToList();
 
-        RegisterServicesForInterface(
-            services,
-            types,
-            typeof(ICommandService<,>),
-            nameof(AddEntityAxisCommandService),
-            lifetime);
-
-        RegisterServicesForInterface(
-            services,
-            types,
-            typeof(IQueryService<,>),
-            nameof(AddEntityAxisQueryService),
-            lifetime);
+            foreach (var implementationType in types)
+            {
+                services.RegisterServicesFromType(implementationType, typeof(ICommandService<,>), lifetime);
+                services.RegisterServicesFromType(implementationType, typeof(IQueryService<,>), lifetime);
+            }
+        }
 
         return services;
+    }
+
+    private static void RegisterServicesFromType(
+        this IServiceCollection services,
+        Type implementationType,
+        Type openGenericServiceType,
+        ServiceLifetime lifetime)
+    {
+        if (implementationType.IsAssignableFromGenericType(openGenericServiceType))
+        {
+            foreach (var serviceInterface in implementationType.GetInterfacesAssignableFromGenericType(openGenericServiceType))
+            {
+                services.RecursiveAdd(serviceInterface, implementationType, lifetime);
+            }
+        }
+    }
+
+    private static void RecursiveAdd(
+        this IServiceCollection services,
+        Type serviceInterface,
+        Type implementationType,
+        ServiceLifetime lifetime,
+        HashSet<Type>? visited = null)
+    {
+        visited ??= new HashSet<Type>();
+
+        if (!visited.Add(serviceInterface))
+        {
+            // Already visited this interface, prevent infinite loop
+            return;
+        }
+
+        services.TryAdd(new ServiceDescriptor(serviceInterface, implementationType, lifetime));
+
+        foreach (var parent in serviceInterface.GetInterfaces())
+        {
+            services.RecursiveAdd(parent, implementationType, lifetime, visited);
+        }
+    }
+
+    private static bool IsAssignableFromGenericType(this Type type, Type genericType)
+    {
+        if (type.GetInterfaces().Any(it => it.IsGenericType && it.GetGenericTypeDefinition() == genericType))
+        {
+            return true;
+        }
+
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == genericType)
+        {
+            return true;
+        }
+
+        return type.BaseType != null && type.BaseType.IsAssignableFromGenericType(genericType);
+    }
+
+    private static IEnumerable<Type> GetInterfacesAssignableFromGenericType(this Type type, Type genericType)
+    {
+        return type.GetInterfaces().Where(it => it.IsAssignableFromGenericType(genericType));
     }
 
     private static void TryAddWithLifetime<TService, TImplementation>(
@@ -145,78 +190,5 @@ public static class EntityServiceRegistrationExtensions
     {
         var descriptor = new ServiceDescriptor(typeof(TService), typeof(TImplementation), lifetime);
         services.TryAdd(descriptor);
-    }
-
-    private static void RegisterServicesForInterface(
-    IServiceCollection services,
-    IReadOnlyList<Type> implementationTypes,
-    Type targetGenericInterface,
-    string registrationMethodName,
-    ServiceLifetime lifetime)
-    {
-        foreach (Type implementationType in implementationTypes)
-        {
-            RegisterMatchingInterfaces(services, implementationType, targetGenericInterface, registrationMethodName, lifetime);
-        }
-    }
-
-    private static void RegisterMatchingInterfaces(
-        IServiceCollection services,
-        Type implementationType,
-        Type targetGenericInterface,
-        string registrationMethodName,
-        ServiceLifetime lifetime)
-    {
-        Type[] implementedInterfaces = implementationType.GetInterfaces();
-
-        foreach (Type interfaceType in implementedInterfaces)
-        {
-            if (TryGetGenericMatch(interfaceType, targetGenericInterface, out Type entityType, out Type keyType))
-            {
-                RegisterGenericService(services, registrationMethodName, interfaceType, implementationType, entityType, keyType, lifetime);
-                break; // Only register once per implementation
-            }
-        }
-    }
-
-    private static bool TryGetGenericMatch(
-        Type interfaceType,
-        Type targetGenericInterface,
-        out Type entityType,
-        out Type keyType)
-    {
-        IEnumerable<Type> inheritedAndSelfInterfaces = interfaceType.GetInterfaces().Append(interfaceType);
-
-        foreach (Type candidateInterface in inheritedAndSelfInterfaces)
-        {
-            if (candidateInterface.IsGenericType &&
-                candidateInterface.GetGenericTypeDefinition() == targetGenericInterface)
-            {
-                Type[] genericArguments = candidateInterface.GetGenericArguments();
-                entityType = genericArguments[0];
-                keyType = genericArguments[1];
-                return true;
-            }
-        }
-
-        entityType = null!;
-        keyType = null!;
-        return false;
-    }
-
-    private static void RegisterGenericService(
-        IServiceCollection services,
-        string registrationMethodName,
-        Type interfaceType,
-        Type implementationType,
-        Type entityType,
-        Type keyType,
-        ServiceLifetime lifetime)
-    {
-        MethodInfo method = typeof(EntityServiceRegistrationExtensions)
-            .GetMethod(registrationMethodName, BindingFlags.Public | BindingFlags.Static)!
-            .MakeGenericMethod(interfaceType, implementationType, entityType, keyType);
-
-        method.Invoke(null, [services, lifetime]);
     }
 }

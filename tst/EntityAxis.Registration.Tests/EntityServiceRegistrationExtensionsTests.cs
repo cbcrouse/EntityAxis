@@ -1,4 +1,5 @@
 ﻿using EntityAxis.Abstractions;
+using EntityAxis.Registration.Tests.MockAssembly;
 using EntityAxis.Registration.Tests.TestClasses;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,7 @@ public class EntityServiceRegistrationExtensionsTests
         // Act
         services.AddEntityAxisCommandService<
             ITestCommandService,
-            TestEntityService,
+            TestEntityCommandService,
             TestEntity,
             int>();
 
@@ -39,7 +40,7 @@ public class EntityServiceRegistrationExtensionsTests
         // Act
         services.AddEntityAxisQueryService<
             ITestQueryService,
-            TestEntityService,
+            TestEntityQueryService,
             TestEntity,
             int>();
 
@@ -60,13 +61,22 @@ public class EntityServiceRegistrationExtensionsTests
         var services = new ServiceCollection();
 
         // Act
-        services.AddEntityAxisCommandAndQueryServicesFromAssembly<TestEntityService>();
+        services.AddEntityAxisCommandAndQueryServicesFromAssembly<TestEntityCommandService>();
 
         var provider = services.BuildServiceProvider();
 
         // Assert: only generic types are registered via scanning
+        provider.GetService<ITestCommandService>().Should().NotBeNull();
         provider.GetService<ICommandService<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<ICreate<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IUpdate<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IDelete<TestEntity, int>>().Should().NotBeNull();
+
+        provider.GetService<ITestQueryService>().Should().NotBeNull();
         provider.GetService<IQueryService<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IGetById<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IGetAll<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IGetPaged<TestEntity, int>>().Should().NotBeNull();
     }
 
     [Fact]
@@ -76,12 +86,46 @@ public class EntityServiceRegistrationExtensionsTests
         var services = new ServiceCollection();
 
         // Act
-        services.AddEntityAxisCommandAndQueryServicesFromAssemblies([typeof(TestEntityService).Assembly]);
+        services.AddEntityAxisCommandAndQueryServicesFromAssemblies([typeof(TestEntityCommandService).Assembly]);
 
         var provider = services.BuildServiceProvider();
 
         // Assert: only generic types are registered via scanning
+        provider.GetService<ITestCommandService>().Should().NotBeNull();
         provider.GetService<ICommandService<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<ICreate<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IUpdate<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IDelete<TestEntity, int>>().Should().NotBeNull();
+
+        provider.GetService<ITestQueryService>().Should().NotBeNull();
         provider.GetService<IQueryService<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IGetById<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IGetAll<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IGetPaged<TestEntity, int>>().Should().NotBeNull();
+    }
+
+    [Fact]
+    public void AddEntityAxisCommandAndQueryServicesFromAssemblies_Should_Not_Register_Custom_Interfaces_When_Inherited_From_Base()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddEntityAxisCommandAndQueryServicesFromAssemblies([typeof(TestEntityQueryServiceWithBase).Assembly]);
+
+        var provider = services.BuildServiceProvider();
+
+        // Assert: only generic types are registered via scanning
+        provider.GetService<ITestCommandService>().Should().NotBeNull();
+        provider.GetService<ICommandService<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<ICreate<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IUpdate<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IDelete<TestEntity, int>>().Should().NotBeNull();
+
+        provider.GetService<ITestQueryService>().Should().NotBeNull();
+        provider.GetService<IQueryService<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IGetById<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IGetAll<TestEntity, int>>().Should().NotBeNull();
+        provider.GetService<IGetPaged<TestEntity, int>>().Should().NotBeNull();
     }
 }

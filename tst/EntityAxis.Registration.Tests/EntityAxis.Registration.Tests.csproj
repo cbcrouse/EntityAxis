@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\EntityAxis.Registration\EntityAxis.Registration.csproj" />
+    <ProjectReference Include="..\EntityAxis.Registration.Tests.MockAssembly\EntityAxis.Registration.Tests.MockAssembly.csproj" />
     <ProjectReference Include="..\EntityAxis.Tests.Common\EntityAxis.Tests.Common.csproj" />
   </ItemGroup>
 
