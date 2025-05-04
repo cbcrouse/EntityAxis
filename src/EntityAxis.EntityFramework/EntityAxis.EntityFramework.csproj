@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EntityAxis.Abstractions\EntityAxis.Abstractions.csproj" />
+    <ProjectReference Include="..\EntityAxis.KeyMappers\EntityAxis.KeyMappers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

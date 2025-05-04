@@ -25,7 +25,7 @@ public static class EntityServiceRegistrationExtensions
     /// The concrete implementation type that provides command functionality.
     /// </typeparam>
     /// <typeparam name="TEntity">The entity type the service operates on.</typeparam>
-    /// <typeparam name="TKey">The type of the entity's primary key.</typeparam>
+    /// <typeparam name="TKey">The type of the application entity's primary key.</typeparam>
     /// <param name="services">The dependency injection service collection.</param>
     /// <param name="lifetime">
     /// The service lifetime to use for all registered interfaces (default: <see cref="ServiceLifetime.Transient"/>).
@@ -58,7 +58,7 @@ public static class EntityServiceRegistrationExtensions
     /// The concrete implementation type that provides query functionality.
     /// </typeparam>
     /// <typeparam name="TEntity">The entity type the service queries.</typeparam>
-    /// <typeparam name="TKey">The type of the entity's primary key.</typeparam>
+    /// <typeparam name="TKey">The type of the application entity's primary key.</typeparam>
     /// <param name="services">The dependency injection service collection.</param>
     /// <param name="lifetime">
     /// The service lifetime to use for all registered interfaces (default: <see cref="ServiceLifetime.Transient"/>).

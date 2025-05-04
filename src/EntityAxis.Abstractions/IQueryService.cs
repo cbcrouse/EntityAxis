@@ -9,6 +9,4 @@ public interface IQueryService<TEntity, TKey> :
     IGetAll<TEntity, TKey>,
     IGetById<TEntity, TKey>,
     IGetPaged<TEntity, TKey>
-    where TEntity : IEntityId<TKey>
-{
-}
+    where TEntity : IEntityId<TKey>;

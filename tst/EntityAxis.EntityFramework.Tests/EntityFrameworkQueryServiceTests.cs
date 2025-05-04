@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EntityAxis.EntityFramework.Tests.TestClasses;
+using EntityAxis.KeyMappers;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -10,6 +11,7 @@ public class EntityFrameworkQueryServiceTests
 {
     private readonly IMapper _mapper;
     private readonly IDbContextFactory<TestDbContext> _contextFactory;
+    private readonly IKeyMapper<int, int> _keyMapper;
 
     public EntityFrameworkQueryServiceTests()
     {
@@ -28,12 +30,15 @@ public class EntityFrameworkQueryServiceTests
 
         _contextFactory = Mock.Of<IDbContextFactory<TestDbContext>>(f =>
             f.CreateDbContextAsync(It.IsAny<CancellationToken>()) == Task.FromResult(context));
+
+        // Identity key mapper for tests
+        _keyMapper = new IdentityKeyMapper<int>();
     }
 
     [Fact]
     public async Task GetByIdAsync_Should_ReturnEntity_WhenExists()
     {
-        var service = new EntityFrameworkQueryService<TestProduct, TestProductEntity, TestDbContext, int>(_contextFactory, _mapper);
+        var service = new EntityFrameworkQueryService<TestProduct, TestProductEntity, TestDbContext, int, int>(_contextFactory, _mapper, _keyMapper);
         var context = await _contextFactory.CreateDbContextAsync();
 
         context.Products.Add(new TestProductEntity
@@ -48,13 +53,13 @@ public class EntityFrameworkQueryServiceTests
         var result = await service.GetByIdAsync(1);
 
         result.Should().NotBeNull();
-        result!.Id.Should().Be(1);
+        result.Id.Should().Be(1);
     }
 
     [Fact]
     public async Task GetByIdAsync_Should_ReturnNull_WhenNotFound()
     {
-        var service = new EntityFrameworkQueryService<TestProduct, TestProductEntity, TestDbContext, int>(_contextFactory, _mapper);
+        var service = new EntityFrameworkQueryService<TestProduct, TestProductEntity, TestDbContext, int, int>(_contextFactory, _mapper, _keyMapper);
 
         var result = await service.GetByIdAsync(999);
 
@@ -64,7 +69,7 @@ public class EntityFrameworkQueryServiceTests
     [Fact]
     public async Task GetAllAsync_Should_ReturnAllEntities()
     {
-        var service = new EntityFrameworkQueryService<TestProduct, TestProductEntity, TestDbContext, int>(_contextFactory, _mapper);
+        var service = new EntityFrameworkQueryService<TestProduct, TestProductEntity, TestDbContext, int, int>(_contextFactory, _mapper, _keyMapper);
         var context = await _contextFactory.CreateDbContextAsync();
 
         context.Products.AddRange(
@@ -82,7 +87,7 @@ public class EntityFrameworkQueryServiceTests
     [Fact]
     public async Task GetPagedAsync_Should_ReturnCorrectSubset()
     {
-        var service = new EntityFrameworkQueryService<TestProduct, TestProductEntity, TestDbContext, int>(_contextFactory, _mapper);
+        var service = new EntityFrameworkQueryService<TestProduct, TestProductEntity, TestDbContext, int, int>(_contextFactory, _mapper, _keyMapper);
         var context = await _contextFactory.CreateDbContextAsync();
 
         for (int i = 1; i <= 10; i++)
@@ -104,9 +109,28 @@ public class EntityFrameworkQueryServiceTests
     [Fact]
     public async Task GetPagedAsync_Should_Throw_WhenPageOrPageSizeIsInvalid()
     {
-        var service = new EntityFrameworkQueryService<TestProduct, TestProductEntity, TestDbContext, int>(_contextFactory, _mapper);
+        var service = new EntityFrameworkQueryService<TestProduct, TestProductEntity, TestDbContext, int, int>(_contextFactory, _mapper, _keyMapper);
 
         await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => service.GetPagedAsync(0, 5));
         await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => service.GetPagedAsync(1, 0));
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_Should_Throw_WhenDbKeyIsNull()
+    {
+        // Arrange
+        var keyMapperMock = new Mock<IKeyMapper<int, string?>>();
+        keyMapperMock.Setup(k => k.ToDbKey(It.IsAny<int>())).Returns((string?)null);
+
+        var service = new EntityFrameworkQueryService<TestProduct, TestStringIdEntity, TestDbContext, int, string?>(
+            _contextFactory, _mapper, keyMapperMock.Object);
+
+        // Act
+        var act = async () => await service.GetByIdAsync(1);
+
+        // Assert
+        await act.Should()
+            .ThrowAsync<InvalidOperationException>()
+            .WithMessage("The entity's key cannot be null.");
     }
 }
