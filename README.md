@@ -4,13 +4,14 @@
 [![codecov](https://codecov.io/gh/cbcrouse/EntityAxis/graph/badge.svg?token=BqTvhjNGOb)](https://codecov.io/gh/cbcrouse/EntityAxis)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=cbcrouse_EntityAxis&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=cbcrouse_EntityAxis)
 
-| Package | NuGet | Downloads |
-|--------|-------|-----------|
-| **EntityAxis.Abstractions** | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.Abstractions)](https://www.nuget.org/packages/EntityAxis.Abstractions) | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.Abstractions)](https://www.nuget.org/stats/packages/EntityAxis.Abstractions) |
-| **EntityAxis.MediatR** | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.MediatR)](https://www.nuget.org/packages/EntityAxis.MediatR) | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.MediatR)](https://www.nuget.org/stats/packages/EntityAxis.MediatR) |
+| Package                             | NuGet                                                                                                                                      | Downloads                                                                                                                                             |
+|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **EntityAxis.Abstractions**         | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.Abstractions)](https://www.nuget.org/packages/EntityAxis.Abstractions)                 | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.Abstractions)](https://www.nuget.org/stats/packages/EntityAxis.Abstractions)                 |
+| **EntityAxis.MediatR**              | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.MediatR)](https://www.nuget.org/packages/EntityAxis.MediatR)                           | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.MediatR)](https://www.nuget.org/stats/packages/EntityAxis.MediatR)                           |
 | **EntityAxis.MediatR.Registration** | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.MediatR.Registration)](https://www.nuget.org/packages/EntityAxis.MediatR.Registration) | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.MediatR.Registration)](https://www.nuget.org/stats/packages/EntityAxis.MediatR.Registration) |
-| **EntityAxis.Registration** | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.Registration)](https://www.nuget.org/packages/EntityAxis.Registration) | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.Registration)](https://www.nuget.org/stats/packages/EntityAxis.Registration) |
-| **EntityAxis.EntityFramework** | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.EntityFramework)](https://www.nuget.org/packages/EntityAxis.EntityFramework) | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.EntityFramework)](https://www.nuget.org/stats/packages/EntityAxis.EntityFramework) |
+| **EntityAxis.Registration**         | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.Registration)](https://www.nuget.org/packages/EntityAxis.Registration)                 | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.Registration)](https://www.nuget.org/stats/packages/EntityAxis.Registration)                 |
+| **EntityAxis.EntityFramework**      | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.EntityFramework)](https://www.nuget.org/packages/EntityAxis.EntityFramework)           | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.EntityFramework)](https://www.nuget.org/stats/packages/EntityAxis.EntityFramework)           |
+| **EntityAxis.KeyMappers**           | [![NuGet](https://img.shields.io/nuget/v/EntityAxis.KeyMappers)](https://www.nuget.org/packages/EntityAxis.KeyMappers)                     | [![Downloads](https://img.shields.io/nuget/dt/EntityAxis.KeyMappers)](https://www.nuget.org/stats/packages/EntityAxis.KeyMappers)                     |
 
 
 **EntityAxis** is a modular, opinionated library for building clean, maintainable applications using **CQRS**, **MediatR**, and **Entity Framework Core** — with full support for your own abstractions and persistence strategies.
@@ -38,13 +39,14 @@ Whether you're working in a monolith, microservice, or modular system, EntityAxi
 
 > 📌 EntityAxis is under active development. APIs may still change before initial release.
 
-| Package                              | Description                                                                 |
-|--------------------------------------|-----------------------------------------------------------------------------|
-| `EntityAxis.Abstractions`           | Core interfaces for command/query service abstractions                     |
-| `EntityAxis.MediatR`                | Generic MediatR request/response and built-in validators                   |
-| `EntityAxis.MediatR.Registration`   | Fluent registration helpers for handlers and validators                    |
-| `EntityAxis.Registration`           | DI registration helpers for command/query services                         |
-| `EntityAxis.EntityFramework`        | Base implementations for EF Core–backed entity operations                  |
+| Package                           | Description                                                                                        |
+|-----------------------------------|----------------------------------------------------------------------------------------------------|
+| `EntityAxis.Abstractions`         | Core interfaces for command/query service abstractions                                             |
+| `EntityAxis.MediatR`              | Generic MediatR request/response and built-in validators                                           |
+| `EntityAxis.MediatR.Registration` | Fluent registration helpers for handlers and validators                                            |
+| `EntityAxis.Registration`         | DI registration helpers for command/query services                                                 |
+| `EntityAxis.EntityFramework`      | Base implementations for EF Core–backed entity operations                                          |
+| `EntityAxis.KeyMappers`           | Type-safe mappers for translating between application and database key types (e.g., string ↔ Guid) |
 
 ---
 
@@ -65,6 +67,7 @@ Whether you're working in a monolith, microservice, or modular system, EntityAxi
 /EntityAxis
 ├── src/
 │   ├── EntityAxis.Abstractions/
+│   ├── EntityAxis.KeyMappers/
 │   ├── EntityAxis.MediatR/
 │   ├── EntityAxis.MediatR.Registration/
 │   ├── EntityAxis.Registration/

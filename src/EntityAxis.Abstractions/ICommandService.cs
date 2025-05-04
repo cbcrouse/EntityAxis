@@ -9,6 +9,4 @@ public interface ICommandService<TEntity, TKey> :
     ICreate<TEntity, TKey>,
     IUpdate<TEntity, TKey>,
     IDelete<TEntity, TKey>
-    where TEntity : IEntityId<TKey>
-{
-}
+    where TEntity : IEntityId<TKey>;

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EntityAxis.Abstractions;
+using EntityAxis.KeyMappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace EntityAxis.EntityFramework;
@@ -10,26 +11,38 @@ namespace EntityAxis.EntityFramework;
 /// <typeparam name="TEntity">The type of the application entity.</typeparam>
 /// <typeparam name="TDbEntity">The type of the database entity.</typeparam>
 /// <typeparam name="TDbContext">The type of the Entity Framework DbContext.</typeparam>
-/// <typeparam name="TKey">The type of the entity's identifier.</typeparam>
-public class EntityFrameworkQueryService<TEntity, TDbEntity, TDbContext, TKey> : EntityFrameworkServiceBase<TDbContext>, IQueryService<TEntity, TKey>
+/// <typeparam name="TKey">The type of the application entity's identifier.</typeparam>
+/// <typeparam name="TDbKey">The type of the database entity's identifier.</typeparam>
+public class EntityFrameworkQueryService<TEntity, TDbEntity, TDbContext, TKey, TDbKey> : EntityFrameworkServiceBase<TDbContext>, IQueryService<TEntity, TKey>
     where TEntity : class, IEntityId<TKey>
-    where TDbEntity : class, IEntityId<TKey>
+    where TDbEntity : class, IEntityId<TDbKey>
     where TDbContext : DbContext
 {
+    private readonly IKeyMapper<TKey, TDbKey> _keyMapper;
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="EntityFrameworkQueryService{TEntity, TDbEntity, TDbContext, TKey}"/> class.
+    /// Initializes a new instance of the <see cref="EntityFrameworkQueryService{TEntity, TDbEntity, TDbContext, TKey, TDbKey}"/> class.
     /// </summary>
     /// <param name="contextFactory">The DbContext factory.</param>
     /// <param name="mapper">The AutoMapper instance.</param>
-    public EntityFrameworkQueryService(IDbContextFactory<TDbContext> contextFactory, IMapper mapper)
-        : base(contextFactory, mapper) { }
+    /// <param name="keyMapper">Mapper for converting between application and database key types.</param>
+    public EntityFrameworkQueryService(IDbContextFactory<TDbContext> contextFactory, IMapper mapper, IKeyMapper<TKey, TDbKey> keyMapper)
+        : base(contextFactory, mapper)
+    {
+        _keyMapper = keyMapper;
+    }
 
     /// <inheritdoc/>
     public async Task<TEntity?> GetByIdAsync(TKey id, CancellationToken cancellationToken = default)
     {
         await using var context = await ContextFactory.CreateDbContextAsync(cancellationToken);
         var dbSet = context.Set<TDbEntity>();
-        var entity = await dbSet.FindAsync(keyValues:[id], cancellationToken);
+        TDbKey dbKey = _keyMapper.ToDbKey(id);
+        if (dbKey is null)
+        {
+            throw new InvalidOperationException("The entity's key cannot be null.");
+        }
+        var entity = await dbSet.FindAsync(keyValues: new object[] { dbKey }, cancellationToken);
         return Mapper.Map<TEntity>(entity);
     }
 

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <ProjectGuid>{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}</ProjectGuid>
+    <PackageId>EntityAxis.KeyMappers</PackageId>
+    <Authors>Casey Crouse</Authors>
+    <Description>
+      Common implementations of IKeyMapper for EntityAxis services.
+      This package provides key mapper implementations for converting between different key types in the application and database layers.
+    </Description>
+    <RepositoryUrl>https://github.com/cbcrouse/EntityAxis</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>
+      entity-framework;crud;key-mapping;entityaxis;clean-architecture
+    </PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIconUrl>
+    </PackageIconUrl>
+    <VersionPrefix>0.1.1</VersionPrefix>
+    <IsTestProject>false</IsTestProject>
+    <LangVersion>latest</LangVersion>
+    <nullable>enable</nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+</Project> 

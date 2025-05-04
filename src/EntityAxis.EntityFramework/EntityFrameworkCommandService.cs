@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EntityAxis.Abstractions;
+using EntityAxis.KeyMappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace EntityAxis.EntityFramework;
@@ -10,23 +11,27 @@ namespace EntityAxis.EntityFramework;
 /// <typeparam name="TEntity">The application entity.</typeparam>
 /// <typeparam name="TDbEntity">The database entity mapped via AutoMapper.</typeparam>
 /// <typeparam name="TDbContext">The EF Core DbContext.</typeparam>
-/// <typeparam name="TKey">The type of the entity's key.</typeparam>
-public class EntityFrameworkCommandService<TEntity, TDbEntity, TDbContext, TKey> : EntityFrameworkServiceBase<TDbContext>, ICommandService<TEntity, TKey>
+/// <typeparam name="TKey">The type of the application entity's key.</typeparam>
+/// <typeparam name="TDbKey">The type of the database entity's key.</typeparam>
+public class EntityFrameworkCommandService<TEntity, TDbEntity, TDbContext, TKey, TDbKey> : EntityFrameworkServiceBase<TDbContext>, ICommandService<TEntity, TKey>
     where TEntity : class, IEntityId<TKey>
-    where TDbEntity : class, IEntityId<TKey>
+    where TDbEntity : class, IEntityId<TDbKey>
     where TDbContext : DbContext
 {
     private readonly IMapper _mapper;
+    private readonly IKeyMapper<TKey, TDbKey> _keyMapper;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EntityFrameworkCommandService{TEntity, TDbEntity, TDbContext, TKey}"/> class.
+    /// Initializes a new instance of the <see cref="EntityFrameworkCommandService{TEntity, TDbEntity, TDbContext, TKey, TDbKey}"/> class.
     /// </summary>
     /// <param name="contextFactory">Factory for creating DbContext instances.</param>
     /// <param name="mapper">AutoMapper instance for mapping entities.</param>
-    public EntityFrameworkCommandService(IDbContextFactory<TDbContext> contextFactory, IMapper mapper)
+    /// <param name="keyMapper">Mapper for converting between application and database key types.</param>
+    public EntityFrameworkCommandService(IDbContextFactory<TDbContext> contextFactory, IMapper mapper, IKeyMapper<TKey, TDbKey> keyMapper)
         : base(contextFactory, mapper)
     {
         _mapper = mapper;
+        _keyMapper = keyMapper;
     }
 
     /// <inheritdoc/>
@@ -36,7 +41,7 @@ public class EntityFrameworkCommandService<TEntity, TDbEntity, TDbContext, TKey>
         var dbEntity = _mapper.Map<TDbEntity>(entity);
         context.Set<TDbEntity>().Add(dbEntity);
         await context.SaveChangesAsync(cancellationToken);
-        return dbEntity.Id;
+        return _keyMapper.ToAppKey(dbEntity.Id);
     }
 
     /// <inheritdoc/>
@@ -45,7 +50,13 @@ public class EntityFrameworkCommandService<TEntity, TDbEntity, TDbContext, TKey>
         await using var context = await ContextFactory.CreateDbContextAsync(cancellationToken);
         var dbSet = context.Set<TDbEntity>();
 
-        TDbEntity? existing = await dbSet.FindAsync(keyValues:[entity.Id!], cancellationToken);
+        TDbKey dbKey = _keyMapper.ToDbKey(entity.Id);
+        if (dbKey is null)
+        {
+            throw new InvalidOperationException("The entity's key cannot be null.");
+        }
+
+        TDbEntity? existing = await dbSet.FindAsync(keyValues: new object[] { dbKey }, cancellationToken);
         if (existing == null)
         {
             throw new InvalidOperationException($"{typeof(TDbEntity).Name} with id '{entity.Id}' was not found.");
@@ -63,7 +74,13 @@ public class EntityFrameworkCommandService<TEntity, TDbEntity, TDbContext, TKey>
         await using var context = await ContextFactory.CreateDbContextAsync(cancellationToken);
         var dbSet = context.Set<TDbEntity>();
 
-        TDbEntity? existing = await dbSet.FindAsync(keyValues:[id!], cancellationToken);
+        TDbKey dbKey = _keyMapper.ToDbKey(id);
+        if (dbKey is null)
+        {
+            throw new InvalidOperationException("The entity's key cannot be null.");
+        }
+
+        TDbEntity? existing = await dbSet.FindAsync(keyValues: new object[] { dbKey }, cancellationToken);
         if (existing == null)
         {
             return;

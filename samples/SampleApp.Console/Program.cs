@@ -1,4 +1,5 @@
-﻿using EntityAxis.MediatR.Commands;
+﻿using EntityAxis.KeyMappers;
+using EntityAxis.MediatR.Commands;
 using EntityAxis.MediatR.Queries;
 using EntityAxis.MediatR.Registration;
 using EntityAxis.Registration;
@@ -9,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SampleApp.Application.Models;
 using SampleApp.Application.Validators;
-using SampleApp.Console.MediatR;
 using SampleApp.Domain;
 using SampleApp.Infrastructure.Mapping;
 using SampleApp.Persistence;
@@ -18,13 +18,17 @@ var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
         // Register in-memory DbContext
-        services.AddDbContextFactory<ProductDbContext>(options =>
+        services.AddDbContextFactory<SampleAppDbContext>(options =>
         {
-            options.UseInMemoryDatabase("ProductDb");
+            options.UseInMemoryDatabase("SampleAppDb");
         });
 
         // Register AutoMapper
-        services.AddAutoMapper(typeof(ProductProfile).Assembly);
+        services.AddAutoMapper(typeof(EntityProfile).Assembly);
+
+        // Register key mappers
+        services.AddSingleton<IKeyMapper<int, int>, IdentityKeyMapper<int>>();
+        services.AddSingleton<IKeyMapper<string, Guid>, StringToGuidKeyMapper>();
 
         // Register command/query services
         services.AddEntityAxisCommandAndQueryServicesFromAssembly<ProductCommandService>();
@@ -32,10 +36,10 @@ var host = Host.CreateDefaultBuilder(args)
         // Register MediatR handlers and validators
         services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
         services.AddEntityAxisHandlers<ProductCreateModel, ProductUpdateModel, Product, int>();
+        services.AddEntityAxisHandlers<OrderCreateModel, OrderUpdateModel, Order, string>();
 
         // Register FluentValidation validators
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
-        services.AddValidatorsFromAssemblyContaining(typeof(ProductUpdateModelValidator));
+        services.AddValidatorsFromAssemblyContaining<ProductUpdateModelValidator>();
     })
     .Build();
 
@@ -115,6 +119,72 @@ try
         var deleted = await mediator.Send(new GetEntityByIdQuery<Product, int>(id));
         Console.WriteLine($"  -> Product {id}: {(deleted == null ? "NOT FOUND" : "STILL EXISTS")}");
     }
+
+    // === DEMONSTRATING TKey (string) mapped to TDbKey (Guid) for Order entity ===
+
+    Console.WriteLine("\n[SEED] Creating multiple orders...\n");
+
+    var orderIds = new List<string>();
+
+    for (int i = 1; i <= 5; i++)
+    {
+        var model = new OrderCreateModel
+        {
+            CustomerName = $"Customer {i}",
+            TotalAmount = 100.00m + (i * 10)
+        };
+
+        var id = await mediator.Send(new CreateEntityCommand<OrderCreateModel, Order, string>(model));
+        orderIds.Add(id);
+        Console.WriteLine($"  -> Created order for {model.CustomerName} with ID: {id} (Valid Guid: {Guid.TryParse(id, out _)} )");
+    }
+
+    Console.WriteLine("\n[READ] Fetching all orders...\n");
+    var allOrders = await mediator.Send(new GetAllEntitiesQuery<Order, string>());
+    Console.WriteLine($"  -> Total orders in database: {allOrders.Count}");
+    foreach (var order in allOrders)
+    {
+        Console.WriteLine($"    - {order.Id}: {order.CustomerName} (${order.TotalAmount})");
+    }
+
+    Console.WriteLine("\n[PAGING] Fetching orders in pages of 2:\n");
+    int orderPage = 1;
+    const int orderPageSize = 2;
+    while (true)
+    {
+        var paged = await mediator.Send(new GetPagedEntitiesQuery<Order, string>(orderPage, orderPageSize));
+        if (paged.Items.Count == 0) break;
+
+        Console.WriteLine($"  Page {orderPage}:");
+        foreach (var order in paged.Items)
+        {
+            Console.WriteLine($"    - {order.Id}: {order.CustomerName} (${order.TotalAmount})");
+        }
+
+        if (paged.Items.Count < orderPageSize)
+            break;
+
+        orderPage++;
+    }
+
+    Console.WriteLine("\n[UPDATE] Updating first order...\n");
+    var firstOrderId = orderIds.First();
+    var updateOrder = new OrderUpdateModel
+    {
+        Id = firstOrderId,
+        CustomerName = "Customer 1 - Updated",
+        TotalAmount = 250.00m
+    };
+    await mediator.Send(new UpdateEntityCommand<OrderUpdateModel, Order, string>(updateOrder));
+    Console.WriteLine($"  -> Updated order: {updateOrder.CustomerName} (${updateOrder.TotalAmount})");
+
+    Console.WriteLine("\n[DELETE] Deleting first order...\n");
+    await mediator.Send(new DeleteEntityCommand<Order, string>(firstOrderId));
+    Console.WriteLine($"  -> Deleted order ID: {firstOrderId}");
+
+    Console.WriteLine("\n[VERIFY] Verifying deletion...\n");
+    var deletedOrder = await mediator.Send(new GetEntityByIdQuery<Order, string>(firstOrderId));
+    Console.WriteLine($"  -> Order {firstOrderId}: {(deletedOrder == null ? "NOT FOUND" : "STILL EXISTS")}");
 
     Console.WriteLine("\n=== DEMO COMPLETE ===");
 }

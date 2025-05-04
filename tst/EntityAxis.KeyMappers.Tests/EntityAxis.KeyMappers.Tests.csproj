@@ -14,7 +14,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
@@ -25,10 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\EntityAxis.Abstractions\EntityAxis.Abstractions.csproj" />
-    <ProjectReference Include="..\..\src\EntityAxis.EntityFramework\EntityAxis.EntityFramework.csproj" />
     <ProjectReference Include="..\..\src\EntityAxis.KeyMappers\EntityAxis.KeyMappers.csproj" />
     <ProjectReference Include="..\EntityAxis.Tests.Common\EntityAxis.Tests.Common.csproj" />
   </ItemGroup>
 
-</Project>
+</Project> 

@@ -22,12 +22,12 @@ internal class TestEntityQueryService : ITestQueryService
     }
 }
 
-internal class TestEntityQueryServiceWithBase : TestEntityFrameworkQueryService<TestEntity, int>, ITestQueryService
+internal class TestEntityQueryServiceWithBase : TestEntityFrameworkQueryService<TestEntity, int, int>, ITestQueryService
 {
     // No need to reimplement methods — inherited methods throw NotImplementedException
 }
 
-internal abstract class TestEntityFrameworkQueryService<TEntity, TKey> : IQueryService<TEntity, TKey>
+internal abstract class TestEntityFrameworkQueryService<TEntity, TKey, TDbKey> : IQueryService<TEntity, TKey>
     where TEntity : class, IEntityId<TKey>
 {
     public Task<TEntity?> GetByIdAsync(TKey id, CancellationToken cancellationToken = default)
