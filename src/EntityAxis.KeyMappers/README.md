@@ -67,10 +67,10 @@ public class CustomKeyMapper : IKeyMapper<string, long>
 
 ## 🔗 Related Packages
 
-- [EntityAxis.Abstractions](https://www.nuget.org/packages/EntityAxis.Abstractions): Defines the `IKeyMapper` interface and core contracts
-- [EntityAxis.EntityFramework](https://www.nuget.org/packages/EntityAxis.EntityFramework): Uses key mappers for database operations
-- [EntityAxis.MediatR](https://www.nuget.org/packages/EntityAxis.MediatR): Works with key mappers for command/query handling
-- [EntityAxis.Registration](https://www.nuget.org/packages/EntityAxis.Registration): Provides extension methods for easy key mapper registration
+- [EntityAxis.Abstractions](https://www.nuget.org/packages/EntityAxis.Abstractions): Defines common CRUD contracts (IGetById, ICreate, etc.) and domain-friendly interfaces for clean application layers.
+- [EntityAxis.EntityFramework](https://www.nuget.org/packages/EntityAxis.EntityFramework): Drop-in base classes for EF Core integration
+- [EntityAxis.MediatR](https://www.nuget.org/packages/EntityAxis.MediatR): Generic MediatR handlers for Create/Read/Update/Delete
+- [EntityAxis.Registration](https://www.nuget.org/packages/EntityAxis.Registration): Offers `IServiceCollection` extension methods to register handlers, validators, and mapping configuration easily in your DI container.
 
 ## 📜 License
 
