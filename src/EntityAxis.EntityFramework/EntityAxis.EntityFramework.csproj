@@ -19,7 +19,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIconUrl>
     </PackageIconUrl>
-    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionPrefix>2.0.0</VersionPrefix>
     <IsTestProject>false</IsTestProject>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
