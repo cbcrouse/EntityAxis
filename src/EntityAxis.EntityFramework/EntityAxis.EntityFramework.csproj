@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ProjectGuid>{1D3778DD-5577-4AA8-A88A-62D7CFBAD9EB}</ProjectGuid>
@@ -27,8 +27,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="14.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
+    <PackageReference Include="AutoMapper" Version="[14.0.0]" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>

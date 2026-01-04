@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11312.210 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp.Console", "SampleApp.Console\SampleApp.Console.csproj", "{E9457FA8-B387-4201-B478-8A2F04F3773C}"
 EndProject
@@ -24,6 +24,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityAxis.MediatR.Registration", "..\src\EntityAxis.MediatR.Registration\EntityAxis.MediatR.Registration.csproj", "{2CFCDBAA-5165-4BF4-80A6-12AE95D59B09}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityAxis.Registration", "..\src\EntityAxis.Registration\EntityAxis.Registration.csproj", "{18839E8F-76FC-437E-BD6E-2A1042F425FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityAxis.KeyMappers", "..\src\EntityAxis.KeyMappers\EntityAxis.KeyMappers.csproj", "{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -155,6 +157,18 @@ Global
 		{18839E8F-76FC-437E-BD6E-2A1042F425FC}.Release|x64.Build.0 = Release|Any CPU
 		{18839E8F-76FC-437E-BD6E-2A1042F425FC}.Release|x86.ActiveCfg = Release|Any CPU
 		{18839E8F-76FC-437E-BD6E-2A1042F425FC}.Release|x86.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}.Debug|x64.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}.Debug|x86.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}.Release|x64.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}.Release|x64.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}.Release|x86.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -165,5 +179,6 @@ Global
 		{14A67B85-20E8-4FE9-BD71-570C739CFC02} = {76F1A8D3-E0CA-47CB-BAA7-470DEB8343C2}
 		{2CFCDBAA-5165-4BF4-80A6-12AE95D59B09} = {76F1A8D3-E0CA-47CB-BAA7-470DEB8343C2}
 		{18839E8F-76FC-437E-BD6E-2A1042F425FC} = {76F1A8D3-E0CA-47CB-BAA7-470DEB8343C2}
+		{A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D} = {76F1A8D3-E0CA-47CB-BAA7-470DEB8343C2}
 	EndGlobalSection
 EndGlobal

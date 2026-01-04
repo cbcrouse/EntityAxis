@@ -34,6 +34,13 @@ jobs:
         git remote set-url origin "https://cbcrouse:${{ secrets.GITHUBACCESSTOKEN }}@github.com/cbcrouse/EntityAxis.git"
         git checkout ${{ github.ref_name }}
 
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: | 
+          6.x
+          10.x
+
     - name: Install Versioning.NET
       run: |
         dotnet tool install --global Versioning.NET
@@ -55,7 +62,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.x'
+          dotnet-version: '10.x'
 
       - name: Restore and build all projects in Release mode
         run: dotnet build ./src/EntityAxis.sln --configuration Release
