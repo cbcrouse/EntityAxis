@@ -39,7 +39,7 @@ jobs:
       with:
         dotnet-version: | 
           6.x
-          10.x
+          11.x
 
     - name: Install Versioning.NET
       run: |
@@ -62,7 +62,7 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.x'
+          dotnet-version: '11.x'
 
       - name: Restore and build all projects in Release mode
         run: dotnet build ./src/EntityAxis.sln --configuration Release
